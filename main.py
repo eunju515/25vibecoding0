@@ -1,89 +1,102 @@
 import streamlit as st
 
-# Set the page title and icon
-st.set_page_config(page_title="MBTI 직업 및 학습 추천 💼📚", page_icon="🎯")
-
-# Header
-st.title("✨ MBTI 유형별 직업 및 학습 추천 💡")
-st.write("당신의 MBTI 유형을 선택하고, 어울리는 직업과 효과적인 학습 방법을 찾아보세요! 🌱")
-
-# MBTI Career and Learning Recommendations in Korean
-mbti_data = {
+# MBTI 학과 선택 및 학습 유형 정보
+mbti_info = {
     "INTJ": {
-        "jobs": "🧠 데이터 과학자, 📊 금융 분석가, 💻 소프트웨어 엔지니어",
-        "learning": "🔍 논리적 사고를 키우는 문제 해결형 학습, 📚 깊이 있는 이론 공부, 📊 복잡한 데이터 분석"
-    },
-    "INTP": {
-        "jobs": "🔬 연구 과학자, 💡 발명가, 👨‍💻 시스템 아키텍트",
-        "learning": "🧠 새로운 아이디어 탐구, 📚 복잡한 개념 이해, 🛠️ 실험과 테스트를 통한 실습"
-    },
-    "ENTJ": {
-        "jobs": "📈 경영 컨설턴트, 🗣️ 기업 임원, 🌐 비즈니스 전략가",
-        "learning": "📊 목표 설정과 전략적 계획, 🗣️ 리더십 훈련, 📈 사례 연구 및 실전 경험"
-    },
-    "ENTP": {
-        "jobs": "💡 기업가, 🎯 마케팅 전략가, 🎥 창의적 감독",
-        "learning": "💥 토론과 브레인스토밍, 💡 혁신적인 아이디어 생성, 📚 다양한 분야의 폭넓은 지식"
-    },
-    "INFJ": {
-        "jobs": "📝 작가, 🧘‍♂️ 심리 상담사, 🌱 사회복지사",
-        "learning": "📝 깊이 있는 글쓰기, 🌱 사람의 감정 이해, 💫 비전과 철학을 통한 통찰"
-    },
-    "INFP": {
-        "jobs": "🎨 그래픽 디자이너, 🎥 영화 제작자, 📝 소설가",
-        "learning": "🎨 감정 표현 중심의 창작, 💭 상상력과 영감을 자극하는 학습, 🌱 자율적인 학습 환경"
-    },
-    "ENFJ": {
-        "jobs": "👩‍🏫 교사, 🗣️ 홍보 전문가, 🤝 인적 자원 관리자",
-        "learning": "💬 그룹 토론과 협력 학습, 💡 인간관계와 소통 기술, 🌍 사회적 책임 의식 함양"
+        "title": "🧠 INTJ - 전략가형",
+        "description": "논리적이고 분석적인 사고를 가진 전략가입니다. 목표 지향적이며 독립적으로 문제를 해결하는 것을 선호합니다.",
+        "major_tips": [
+            "📊 논리적 사고와 복잡한 문제 해결이 필요한 전공을 고려해보세요.",
+            "🧩 장기적인 계획 수립과 분석이 중요한 분야에 강합니다.",
+            "🖥️ 기술 발전과 데이터 연구에 관심이 많다면 IT, 공학, 경영도 좋은 선택입니다."
+        ],
+        "recommended_majors": [
+            "💻 컴퓨터공학",
+            "📊 데이터사이언스",
+            "🏛️ 경영학",
+            "⚙️ 기계공학"
+        ],
+        "learning_styles": [
+            "📝 체계적인 자료 정리와 논리적 분석이 중요한 학습 스타일",
+            "📚 깊이 있는 연구와 비판적 사고를 활용한 자기주도 학습",
+            "🗂️ 복잡한 문제를 단계적으로 해결하는 접근법"
+        ]
     },
     "ENFP": {
-        "jobs": "🎤 동기부여 연설가, 🎨 창작 감독, 📚 라이프 코치",
-        "learning": "✨ 창의적인 프로젝트, 🎤 자유로운 아이디어 표현, 🌱 의미 있는 경험에서 배우기"
-    },
-    "ISTJ": {
-        "jobs": "📊 회계사, 👮 경찰, 📐 건축가",
-        "learning": "📏 정확한 사실 학습, 📚 체계적인 지식 쌓기, 🗃️ 규칙과 구조에 충실한 학습"
+        "title": "🌈 ENFP - 활동가형",
+        "description": "열정적이고 창의적이며 사람들과의 교류를 즐기는 성격입니다. 다양한 아이디어와 경험을 탐구하는 것을 좋아합니다.",
+        "major_tips": [
+            "🎨 창의적인 표현이 중요한 전공을 고려해보세요.",
+            "🗣️ 사람들과 소통하고 다양한 시각을 받아들일 수 있는 분야가 어울립니다.",
+            "📢 예술, 미디어, 심리학, 마케팅 등 자유로운 사고가 중요한 전공이 좋습니다."
+        ],
+        "recommended_majors": [
+            "🎥 미디어 커뮤니케이션",
+            "📚 문예창작",
+            "🧠 심리학",
+            "📢 광고홍보학"
+        ],
+        "learning_styles": [
+            "💡 창의적이고 자유로운 아이디어를 중심으로 한 학습",
+            "🗣️ 그룹 토론과 협력을 통한 활발한 학습",
+            "🎨 시각적 자료와 스토리텔링을 통한 이해"
+        ]
     },
     "ISFJ": {
-        "jobs": "🧑‍⚕️ 간호사, 👩‍🍳 요리사, 👨‍🏫 초등학교 교사",
-        "learning": "📝 세부 사항에 주의하는 학습, 🌱 실용적인 지식 쌓기, ❤️ 타인에게 도움을 주는 실습"
-    },
-    "ESTJ": {
-        "jobs": "🗃️ 프로젝트 매니저, 👩‍⚖️ 변호사, 🏛️ 공무원",
-        "learning": "📊 계획적이고 목표 지향적인 학습, 💼 리더십 훈련, 🗂️ 구조적인 자료 정리"
-    },
-    "ESFJ": {
-        "jobs": "💼 인사 관리자, 🏥 의료 관리자, 👩‍💻 고객 서비스 전문가",
-        "learning": "💬 타인과의 상호작용을 통한 학습, 📚 체계적인 정보 수집, 🌱 사람을 돕는 실습"
-    },
-    "ISTP": {
-        "jobs": "🛠️ 기계 기술자, 🚀 파일럿, 👨‍🔧 엔지니어",
-        "learning": "🔧 실습을 통한 학습, 🛠️ 문제 해결 능력 개발, 📐 정확한 기술 이해"
-    },
-    "ISFP": {
-        "jobs": "🖌️ 아티스트, 🎸 음악가, 🧵 패션 디자이너",
-        "learning": "🎨 감각적인 표현 중심의 학습, 🎵 창의성을 자극하는 활동, 🌸 개인의 감정을 담은 작업"
-    },
-    "ESTP": {
-        "jobs": "💥 영업 관리자, 🏋️‍♂️ 피트니스 트레이너, 🚀 모험 가이드",
-        "learning": "⚡ 실전 경험 중심의 학습, 🥊 경쟁적 환경에서 배우기, 📈 즉각적인 피드백 수용"
-    },
-    "ESFP": {
-        "jobs": "🎤 배우, 🎶 음악 퍼포머, 🥂 이벤트 플래너",
-        "learning": "🎉 활동적이고 참여적인 학습, 🎤 현장에서 배우기, 🌟 실생활에서의 감정 표현"
-    },
+        "title": "💖 ISFJ - 수호자형",
+        "description": "배려심이 많고 책임감 있는 성격으로, 타인을 돕는 일에서 보람을 느낍니다. 세심하고 헌신적인 태도를 보입니다.",
+        "major_tips": [
+            "🛡️ 사람을 돕고 보살피는 전공을 고려해보세요.",
+            "📘 안정적이고 체계적인 환경에서 잘 성장할 수 있는 학과가 좋습니다.",
+            "🎗️ 실용적인 지식을 배우고 싶은 분야를 선택하세요."
+        ],
+        "recommended_majors": [
+            "🧑‍⚕️ 간호학",
+            "👨‍🏫 교육학",
+            "📋 사회복지학",
+            "🏥 보건행정학"
+        ],
+        "learning_styles": [
+            "📑 꼼꼼하고 체계적인 학습 방식",
+            "❤️ 사람을 돕는 실습과 사례 중심의 학습",
+            "📝 반복적인 복습과 정확한 정보 정리에 강함"
+        ]
+    }
 }
 
-# User input for MBTI type
-mbti_type = st.selectbox("당신의 MBTI 유형을 선택하세요:", list(mbti_data.keys()))
+# 앱 설정
+st.set_page_config(page_title="학생 MBTI 학과 선택 도우미 💬", layout="centered", page_icon="🎓")
+st.title("💬 학생 MBTI 학과 선택 및 학습 유형 도우미")
+st.markdown("학생의 MBTI를 선택하면, 해당 성격의 특징, 어울리는 대학 학과, 효과적인 학습 유형을 알려드릴게요! 😊")
 
-# Display the recommended careers and learning tips
-if mbti_type:
-    st.subheader(f"💫 {mbti_type}에게 어울리는 직업 추천:")
-    st.success(mbti_data[mbti_type]["jobs"])
-    st.subheader("📚 효과적인 학습 방법:")
-    st.info(mbti_data[mbti_type]["learning"])
+# MBTI 선택
+mbti = st.selectbox("🔍 학생의 MBTI를 선택해주세요:", list(mbti_info.keys()))
 
-# Footer
-st.write("📝 당신의 잠재력을 발견하고, 꿈을 향해 도전하세요! ✨")
+# 정보 표시
+if mbti:
+    st.markdown("---")
+    st.subheader(mbti_info[mbti]["title"])
+    st.markdown(f"**📌 성격 특징:**\n\n{mbti_info[mbti]['description']}")
+    
+    st.markdown("**🎯 추천 전공:**")
+    for major in mbti_info[mbti]["recommended_majors"]:
+        st.markdown(f"- {major}")
+    
+    st.markdown("**🛠️ 학과 선택 팁:**")
+    for tip in mbti_info[mbti]["major_tips"]:
+        st.markdown(f"- {tip}")
+    
+    st.markdown("**📚 학습 유형:**")
+    for style in mbti_info[mbti]["learning_styles"]:
+        st.markdown(f"- {style}")
+    
+    st.markdown("---")
+    st.success("📚 학생의 잠재력을 발견하고 꿈을 향해 나아가는 것이 최고의 시작입니다! 🙌")
+
+# 하단 문구
+st.markdown("""
+<div style='text-align: center; font-size: 16px; margin-top: 30px;'>
+    🙌 학과 선택은 학생의 미래를 결정하는 중요한 과정입니다. <br>
+    <b>진심 어린 관심</b>과 <b>MBTI 이해</b>로 더 깊은 상담을 시작해 보세요!
+</div>
+""", unsafe_allow_html=True)

@@ -1,7 +1,7 @@
 import streamlit as st
 import random
 
-# 더 재미있고 유쾌하게 바꾼 질문 리스트
+# 재미있는 질문 리스트
 fun_questions = [
     ("🤝 친구들과 있을 때 에너지가 펑펑 솟나요? 아니면 혼자 있을 때 충전되나요?", "E"),
     ("🏡 혼자만의 시간이 꿀맛처럼 달콤하게 느껴지나요?", "I"),
@@ -29,6 +29,27 @@ fun_questions = [
     ("🌀 결정을 내리기 전에 여러 가능성을 탐색하는 편인가요?", "P"),
 ]
 
+# MBTI 유형별 한줄평
+mbti_comment = {
+    "ISTJ": "🧐 원칙을 지키는 현실주의자! 체크리스트 없인 못 살아~",
+    "ISFJ": "🧸 모두를 챙기는 다정한 집사! 숨은 배려왕!",
+    "INFJ": "🔮 세상을 읽는 마음의 마법사! 조용한 혁명가!",
+    "INTJ": "🧠 치밀한 전략 설계자! 계획 세우기의 달인!",
+    "ISTP": "🛠️ 고장난 건 다 맡겨! 손재주 만렙 실전 해결사!",
+    "ISFP": "🎨 감성 한 스푼, 자유 두 스푼! 예술혼이 불타는 낭만파!",
+    "INFP": "🌱 몽상과 상상의 나라, 진정성 가득한 이상주의자!",
+    "INTP": "💡 궁금한 건 못 참아! 논리와 아이디어의 끝판왕!",
+    "ESTP": "🏄‍♂️ 오늘도 모험 출발! 즉흥과 에너지의 화신!",
+    "ESFP": "🎉 파티엔 내가 빠질 수 없지! 분위기 띄우는 핵인싸!",
+    "ENFP": "🚀 열정이 폭발한다! 아이디어 샘솟는 자유로운 영혼!",
+    "ENTP": "🦜 토론은 나의 힘! 재치와 창의력의 대마왕!",
+    "ESTJ": "📋 조직의 기둥! 믿고 맡기는 현실파 리더!",
+    "ESFJ": "🤗 모두의 든든한 응원군! 친절함이 묻어나는 소셜왕!",
+    "ENFJ": "🦸 세상을 바꾸는 따뜻한 리더! 정의감 뿜뿜!",
+    "ENTJ": "👑 목표를 향해 직진! 카리스마 넘치는 추진력 갑!",
+}
+
+
 # 질문 순서 섞기
 random.seed(42)
 questions = random.sample(fun_questions, len(fun_questions))
@@ -48,13 +69,13 @@ if st.session_state.quiz_index < quiz_len:
 
     answer = st.radio("선택하세요:", ("예 👍", "아니오 👎"), key=f"q{st.session_state.quiz_index}")
     if st.button("다음 ▶️"):
-        st.session_state.answers.append((trait, answer, q))
+        st.session_state.answers.append((trait, answer))
         st.session_state.quiz_index += 1
-        st.experimental_rerun() if hasattr(st, "experimental_rerun") else None  # 구버전 호환
+        st.experimental_rerun() if hasattr(st, "experimental_rerun") else None
 else:
-    # 결과 계산
+    # MBTI 계산
     scores = {"E":0, "I":0, "S":0, "N":0, "T":0, "F":0, "J":0, "P":0}
-    for idx, (trait, ans, qtext) in enumerate(st.session_state.answers):
+    for trait, ans in st.session_state.answers:
         if trait in scores:
             if ans.startswith("예"):
                 scores[trait] += 1
@@ -76,20 +97,9 @@ else:
     mbti += "J" if scores["J"] >= scores["P"] else "P"
 
     st.header(f"🎉 당신의 MBTI 유형은: **{mbti}** 🎉")
-
-    # 사용자가 "예"라고 답한 질문 중 2~3개를 랜덤으로 선택해서 성격 문장 생성
-    yes_questions = [qtext for trait, ans, qtext in st.session_state.answers if ans.startswith("예")]
-    if yes_questions:
-        picked = random.sample(yes_questions, min(3, len(yes_questions)))
-        comment = " ".join([
-            f"'{q.replace('🤝','사교력 만렙!').replace('🏡','집콕 마스터!').replace('🎉','파티의 주인공!').replace('📚','책벌레!').replace('🔍','디테일 장인!').replace('🌌','상상력 부자!').replace('🛠️','실전파!').replace('🤔','깊은 사색가!').replace('🗺️','여행계획러!').replace('📖','문학 감성러!').replace('🧠','이성파!').replace('💓','공감왕!').replace('⚖️','논리왕!').replace('📊','객관적 평가자!').replace('🤗','위로천사!').replace('📅','계획의 신!').replace('🌊','유연한 사고!').replace('⏰','시간 엄수!').replace('🎲','즉흥적 모험가!').replace('✅','완벽주의자!').replace('🌀','다방면 탐구자!')}'"
-            for q in picked
-        ])
-        st.markdown(f"**당신의 성격 한 줄 평:**<br> {comment}", unsafe_allow_html=True)
-    else:
-        st.write("아직 당신의 성격을 파악할 단서가 부족해요! 😅")
+    st.subheader(f"👉 {mbti_comment.get(mbti, '개성만점!')} 👈")
 
     if st.button("🔄 다시하기"):
         st.session_state.quiz_index = 0
         st.session_state.answers = []
-        st.experimental_rerun() if hasattr(st, "experimental_rerun") else None  # 구버전 호환
+        st.experimental_rerun() if hasattr(st, "experimental_rerun") else None

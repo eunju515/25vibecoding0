@@ -41,7 +41,6 @@ if 'quiz_index' not in st.session_state:
     st.session_state.quiz_index = 0
     st.session_state.answers = []
 
-# 퀴즈 진행
 quiz_len = len(questions)
 if st.session_state.quiz_index < quiz_len:
     q, trait = questions[st.session_state.quiz_index]
@@ -50,13 +49,13 @@ if st.session_state.quiz_index < quiz_len:
 
     answer = st.radio("선택하세요:", ("예 👍", "아니오 👎"), key=f"q{st.session_state.quiz_index}")
     if st.button("다음 ▶️"):
-        st.session_state.answers.append((trait, answer))
+        st.session_state.answers.append((trait, answer, q))
         st.session_state.quiz_index += 1
         st.experimental_rerun() if hasattr(st, "experimental_rerun") else None  # 구버전 호환
 else:
     # 결과 계산
     scores = {"E":0, "I":0, "S":0, "N":0, "T":0, "F":0, "J":0, "P":0}
-    for idx, (trait, ans) in enumerate(st.session_state.answers):
+    for idx, (trait, ans, qtext) in enumerate(st.session_state.answers):
         if trait in scores:
             if ans.startswith("예"):
                 scores[trait] += 1
@@ -78,8 +77,20 @@ else:
     mbti += "J" if scores["J"] >= scores["P"] else "P"
 
     st.header(f"🎉 당신의 MBTI 유형은: **{mbti}** 🎉")
+
+    # 사용자가 "예"라고 답한 질문 중 2~3개를 랜덤으로 선택해서 성격 문장 생성
+    yes_questions = [qtext for trait, ans, qtext in st.session_state.answers if ans.startswith("예")]
+    if yes_questions:
+        picked = random.sample(yes_questions, min(3, len(yes_questions)))
+        comment = " ".join([
+            f"'{q.replace('🤝','사교성 폭발!').replace('🏡','집콕 마스터!').replace('🎉','파티의 주인공!').replace('📚','조용한 시간 애호가!').replace('🔍','관찰력 최고!').replace('🌌','상상력 풍부!').replace('🛠️','실전파!').replace('🤔','깊은 사색가!').replace('🗺️','계획형 여행자!').replace('📖','문학적 감성!').replace('🧠','이성적인 두뇌!').replace('💓','따뜻한 마음!').replace('⚖️','논리왕!').replace('🤝','협동의 달인!').replace('📊','객관적 평가자!').replace('🤗','공감능력자!').replace('📅','계획의 신!').replace('🌊','유연한 사고!').replace('⏰','시간 엄수!').replace('🎲','즉흥적 모험가!').replace('✅','완벽주의자!').replace('🌀','다양성 탐험가!')}'"
+            for q in picked
+        ])
+        st.markdown(f"**당신의 성격 한 줄 평:**<br> {comment}", unsafe_allow_html=True)
+    else:
+        st.write("아직 당신의 성격을 파악할 단서가 부족해요! 😅")
+
     if st.button("🔄 다시하기"):
         st.session_state.quiz_index = 0
         st.session_state.answers = []
         st.experimental_rerun() if hasattr(st, "experimental_rerun") else None  # 구버전 호환
-

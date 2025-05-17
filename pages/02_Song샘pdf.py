@@ -1,80 +1,37 @@
 import streamlit as st
-import fitz  # PyMuPDF
-from pptx import Presentation
-from pptx.util import Inches
-from tqdm import tqdm
-from io import BytesIO
-from PIL import Image
-import os
 
-# Streamlit UI
-st.title("PDF to PPTX Converter(by 석리송)")
-st.write("Upload a PDF file to convert each page to a slide in a PPTX file.")
+mbti_types = [
+    "ISTJ", "ISFJ", "INFJ", "INTJ",
+    "ISTP", "ISFP", "INFP", "INTP",
+    "ESTP", "ESFP", "ENFP", "ENTP",
+    "ESTJ", "ESFJ", "ENFJ", "ENTJ"
+]
 
-# File uploader
-uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
+mbti_meme = {
+    "ISTJ": "🧐 [ISTJ] \"내가 짠 시간표, 한 칸도 어길 수 없다!\" (수첩에 할 일 빼곡)",
+    "ISFJ": "🧸 [ISFJ] \"친구 도시락 뚜껑도 챙겨주는 진정한 반의 엄마/아빠\"",
+    "INFJ": "🔮 [INFJ] \"친구 고민 상담하다가 인생 명언 제조 중...\"",
+    "INTJ": "🧠 [INTJ] \"시험 출제 경향 분석해서 예상문제 뽑는 중\"",
+    "ISTP": "🛠️ [ISTP] \"교실 의자 삐걱이면 바로 고쳐주는 의자 수리공\"",
+    "ISFP": "🎨 [ISFP] \"수업 시간에 필기하다가 노트 구석에 그림 한가득\"",
+    "INFP": "🌱 [INFP] \"교실 창밖 보며 ‘내 미래는...’ 상상하는 몽상가\"",
+    "INTP": "💡 [INTP] \"수업 듣다가 갑자기 ‘왜?’가 백 번 떠오름\"",
+    "ESTP": "🏄‍♂️ [ESTP] \"체육대회 때 응원단장 맡아서 반 분위기 UP!\"",
+    "ESFP": "🎉 [ESFP] \"급식 메뉴 좋으면 점심시간에 댄스파티 각!\"",
+    "ENFP": "🚀 [ENFP] \"동아리, 학생회, 봉사활동 다 하고도 에너지 넘침\"",
+    "ENTP": "🦜 [ENTP] \"수업 중 선생님께 질문 폭격, 토론은 내 무대!\"",
+    "ESTJ": "📋 [ESTJ] \"조별과제 팀장 맡아서 역할 분배 완벽하게!\"",
+    "ESFJ": "🤗 [ESFJ] \"시험 끝나면 친구들 모아 다 같이 떡볶이 먹으러!\"",
+    "ENFJ": "🦸 [ENFJ] \"반 분위기 안 좋으면 먼저 나서서 분위기 메이커!\"",
+    "ENTJ": "👑 [ENTJ] \"학생회장 지원, 목표는 전교 1등!\"",
+}
 
-# Convert PDF to PPTX
-def convert_pdf_to_pptx(pdf_data, output_filename):
-    pdf_document = fitz.open("pdf", pdf_data)
-    presentation = Presentation()
+st.title("🎯 오늘의 MBTI 밈")
+st.write("당신의 MBTI 유형을 선택하면, 오늘의 고등학생 밈을 알려드려요!")
 
-    for page_num in tqdm(range(len(pdf_document)), desc="Converting PDF to PPTX"):
-        page = pdf_document.load_page(page_num)
-        
-        # 페이지 크기 가져오기 (인치 단위로 변환)
-        page_width = Inches(page.rect.width / 72)  # 1인치 = 72pt
-        page_height = Inches(page.rect.height / 72)
-        
-        # 슬라이드 크기 설정
-        presentation.slide_width = page_width
-        presentation.slide_height = page_height
-        
-        # PDF 페이지를 이미지로 렌더링
-        pix = page.get_pixmap()
-        image = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
-        
-        # 슬라이드 추가 및 이미지 배치
-        slide = presentation.slides.add_slide(presentation.slide_layouts[5])  # 빈 슬라이드 레이아웃
-        
-        image_width, image_height = image.size
-        aspect_ratio = image_width / image_height
+selected_mbti = st.selectbox("MBTI 유형을 골라주세요 👇", mbti_types, index=0)
 
-        if page_width / page_height > aspect_ratio:
-            new_height = page_height
-            new_width = new_height * aspect_ratio
-        else:
-            new_width = page_width
-            new_height = new_width / aspect_ratio
-
-        left = (page_width - new_width) / 2
-        top = (page_height - new_height) / 2
-        
-        # 이미지를 슬라이드에 추가
-        image_bytes = BytesIO()
-        image.save(image_bytes, format="PNG")
-        image_bytes.seek(0)
-        slide.shapes.add_picture(image_bytes, left, top, width=new_width, height=new_height)
-    
-    # 프레젠테이션을 BytesIO에 저장하여 반환
-    pptx_data = BytesIO()
-    presentation.save(pptx_data)
-    pptx_data.seek(0)
-    return pptx_data
-
-# Process PDF and provide download link
-if uploaded_file is not None:
-    # PDF 파일 이름에서 확장자를 제외하고 PPTX 파일 이름 생성
-    output_filename = os.path.splitext(uploaded_file.name)[0] + ".pptx"
-    
-    st.write("Converting PDF to PPTX, please wait...")
-    pptx_data = convert_pdf_to_pptx(uploaded_file.read(), output_filename)
-    st.success("Conversion completed!")
-
-    # Provide download link for PPTX
-    st.download_button(
-        label="Download PPTX file",
-        data=pptx_data,
-        file_name=output_filename,
-        mime="application/vnd.openxmlformats-officedocument.presentationml.presentation"
-    )
+if selected_mbti:
+    st.markdown("---")
+    st.markdown(f"## {selected_mbti}의 오늘의 밈")
+    st.info(mbti_meme.get(selected_mbti, "오늘도 나만의 길을 가는 중!"))

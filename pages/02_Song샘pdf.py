@@ -68,7 +68,7 @@ mbti_weather_feeling_meme = {
     ("ISFJ", "비☔", "약간 우울"): "☔ 비 오는 날엔 조용히 친구 걱정해주는 마음씨.",
 }
 
-st.title("🎯 오늘의 고등학생 MBTI 밈")
+st.title("🎯 오늘의 MBTI 밈")
 st.write("오늘의 내 MBTI, 날씨, 그리고 기분을 골라보세요!")
 
 col1, col2, col3 = st.columns(3)
